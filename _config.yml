@@ -99,7 +99,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar:"https://github.com/directus/directus/discussions/3123"
+avatar:"https://es.dreamstime.com/illustration/personaje-de-caricatura-avatar-familiar.html"
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
