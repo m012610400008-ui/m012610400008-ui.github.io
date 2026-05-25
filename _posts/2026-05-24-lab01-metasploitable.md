@@ -15,9 +15,9 @@ Metasploitable 3 es una máquina virtual basada en Windows Server 2008 R2 diseñ
 
 > **Nota de Laboratorio:** Dado que los recursos provistos en este curso corresponden a paquetes `.ova`, el proceso se realizó mediante una importación directa, configurándose el almacenamiento de forma automática con su propio disco virtual preinstalado y prescindiendo del montaje manual de un archivo `.iso`.
 
-![Creación de la VM en VirtualBox](/assets/images/lab01/captura_kali.png)
+![Creación de la VM en VirtualBox]({{ site.baseurl }}/assets/images/lab01/captura_kali.png)
 
-![ISO montado en la VM](/assets/images/lab01/captura_win_iso.png)
+![ISO montado en la VM]({{ site.baseurl }}/assets/images/lab01/captura_win_iso.png)
 
 ---
 
@@ -46,4 +46,4 @@ Tras levantar ambas máquinas virtuales en el segmento correspondiente, procedim
 
 A través de la consola del atacante (Kali Linux), enviamos paquetes ICMP a la máquina objetivo obteniendo respuestas exitosas en tiempo real, confirmando el enlace.
 
-![Ping exitoso](/assets/images/lab01/ping_ok.png)
+![Ping exitoso]({{ site.baseurl }}/assets/images/lab01/ping_ok.png)
