@@ -31,8 +31,6 @@ Se seleccionó la opción de **NatNetwork** (Red NAT) basándonos en los siguien
 * **Interconectividad:** El modo *NAT clásico* aísla cada equipo de forma independiente, impidiendo que Kali Linux logre "ver" o atacar al objetivo. El modo *NatNetwork* crea un switch virtual intermedio que permite la comunicación mutua directa manteniendo el entorno protegido.
 * **Salida a Internet:** Facilita que las máquinas tengan salida regulada hacia internet a través del host para la descarga de herramientas o actualizaciones si es requerido.
 
-![Configuración de red](/assets/images/lab01/red_natnetwork.png)
-
 ---
 
 ## Verificación de conectividad
