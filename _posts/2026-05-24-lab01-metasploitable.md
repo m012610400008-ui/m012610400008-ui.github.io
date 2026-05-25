@@ -66,7 +66,7 @@ Metasploitable 3 es una máquina virtual basada en Windows Server 2008 R2 diseñ
 
 
 
-!\\\[Creación de la VM en VirtualBox](/assets/images/lab01/captura\\\_kali.png)
+![Creación de la VM en VirtualBox](/assets/images/lab01/captura_kali.png)
 
 
 
@@ -74,7 +74,7 @@ Metasploitable 3 es una máquina virtual basada en Windows Server 2008 R2 diseñ
 
 
 
-!\\\[ISO montado en la VM](/assets/images/lab01/captura\\\_win\\\_iso.png)
+![ISO montado en la VM](/assets/images/lab01/captura_win_iso.png)
 
 
 
@@ -130,7 +130,7 @@ Se seleccionó la opción de \\\*\\\*NatNetwork\\\*\\\* (Red NAT) basándonos en
 
 
 
-!\\\[Configuración de red](/assets/images/lab01/red\\\_natnetwork\\\_kali.png)
+![Configuración de red](/assets/images/lab01/red_natnetwork_kali.png)
 
 
 
@@ -198,5 +198,5 @@ A través de la consola del atacante (Kali Linux), enviamos paquetes ICMP a la m
 
 
 
-!\\\[Ping exitoso](/assets/images/lab01/ping\\\_ok.png)
+![Ping exitoso](/assets/images/lab01/ping_ok.png)
 
