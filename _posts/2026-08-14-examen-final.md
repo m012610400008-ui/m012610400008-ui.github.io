@@ -1,4 +1,4 @@
-Aquí tienes todo el código del archivo completamente corregido. Se han eliminado todas las cadenas http:// del texto y bloques de código para evitar que la herramienta HTML-Proofer de GitHub Actions interprete esas direcciones como hipervínculos no seguros.Selecciona todo el bloque a continuación, reemplaza por completo el contenido de tu archivo 2026-08-14-examen-final.md en Visual Studio Code, guárdalo y haz el git push.Markdown---
+---
 layout: post
 title: "EXAMEN FINAL - Capstone Threat-Informed"
 date: 2026-08-14 18:00:00 -0500
