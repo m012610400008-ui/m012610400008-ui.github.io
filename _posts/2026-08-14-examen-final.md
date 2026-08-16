@@ -213,9 +213,19 @@ Se verificó que el puerto 8484 corresponde a un servidor Jenkins accesible medi
 
 ---
 
-## 11. Captura visual de Jenkins
+### 10.1 Captura visual de Jenkins
 
-Acceso mediante navegador web en 10.0.2.3:8484.11. Enumeración de Apache/WAMPServerLa consulta HTTP permitió identificar Apache 2.2.21 ejecutándose sobre Windows, junto con PHP 5.3.10. El servidor respondió correctamente con código HTTP 200.Bashcurl -I 10.0.2.3:8585
+Acceso mediante navegador web en 10.0.2.3:8484.
+
+![Captura de jenkins firefox](/assets/images/Examenfinal/jenkinsfirefox.png)
+
+---
+
+## 11. Enumeración de Apache/WAMPServer
+
+La consulta HTTP permitió identificar Apache 2.2.21 ejecutándose sobre Windows, junto con PHP 5.3.10. El servidor respondió correctamente con código HTTP 200.Bashcurl -I 10.0.2.3:8585
+
+![Captura de Enumeración de Apache](/assets/images/Examenfinal/apache.png)
 
 ---
 
@@ -223,17 +233,38 @@ Acceso mediante navegador web en 10.0.2.3:8484.11. Enumeración de Apache/WAMPSe
 
 Acceso mediante navegador web en 10.0.2.3:8585.12. Enumeración de GlassFishSe verificó mediante HTTP que el puerto 8080 corresponde a Oracle GlassFish Server Open Source Edition 4.0, confirmando la información obtenida previamente mediante Nmap.Bashcurl -I 10.0.2.3:8080
 
+![Captura de WAMPServer](/assets/images/Examenfinal/wampserver.png)
+
 ---
 
 ## 13. Acceso mediante navegador GlassFish
 
-Acceso visual al portal de administración en 10.0.2.3:8080.13. Enumeración de TomcatSe verificó la disponibilidad del servicio web asociado a Apache Tomcat en el puerto 8282. Nmap identificó la versión Apache Tomcat 8.0.33.Bashcurl -I 10.0.2.3:8282
+Acceso visual al portal de administración en 10.0.2.3:8080.
+
+![Captura de GlassFish](/assets/images/Examenfinal/glassfish.png)
 
 ---
 
-## 14. Acceso mediante navegador Tomcat
+## 14. Enumeración de Tomcat
 
-Acceso visual a la interfaz web en 10.0.2.3:8282.14. Enumeración de ElasticsearchSe verificó que el servicio Elasticsearch se encuentra accesible mediante HTTP en el puerto 9200. La respuesta permitió identificar la instancia Overrider y la versión Elasticsearch 1.1.1.Bashcurl 10.0.2.3:9200
+Se verificó la disponibilidad del servicio web asociado a Apache Tomcat en el puerto 8282. Nmap identificó la versión Apache Tomcat 8.0.33.
+
+![Captura de tomcat](/assets/images/Examenfinal/tomcat.png)
+
+---
+
+### 13.1 Acceso mediante navegador Tomcat
+
+Acceso visual a la interfaz web en 10.0.2.3:8282.
+
+![Captura de navegadortomcat](/assets/images/Examenfinal/navegadortomcat.png)
+
+
+## 14. Enumeración de Elasticsearch
+
+Se verificó que el servicio Elasticsearch se encuentra accesible mediante HTTP en el puerto 9200. La respuesta permitió identificar la instancia Overrider y la versión Elasticsearch 1.1.1.Bashcurl 10.0.2.3:9200
+
+![Captura de Elasticsearch](/assets/images/Examenfinal/elasticsearch.png)
 
 ---
 
@@ -241,11 +272,15 @@ Acceso visual a la interfaz web en 10.0.2.3:8282.14. Enumeración de Elasticsear
 
 La consulta del estado del clúster confirmó que Elasticsearch se encuentra operativo con un único nodo.Bashcurl 10.0.2.3:9200/_cluster/health
 
+![Captura de Cluster](/assets/images/Examenfinal/cluster.png)
+
 ---
 
 ## 16. Enumeración de índices Elasticsearch
 
 Se consultó el catálogo de índices de Elasticsearch mediante la API _cat/indices. La respuesta permitió identificar los índices disponibles en la instancia y verificar la información que el servicio expone mediante su interfaz REST.Bashcurl 10.0.2.3:9200/_cat/indices?v
+
+![Captura de Indices](/assets/images/Examenfinal/indices.png)
 
 ---
 
@@ -253,10 +288,45 @@ Se consultó el catálogo de índices de Elasticsearch mediante la API _cat/indi
 
 Se verificó la respuesta del servicio WinRM expuesto en el puerto 5985. Este servicio corresponde a mecanismos de administración remota de Windows y representa una superficie adicional que debe ser protegida y restringida.Bashcurl -I 10.0.2.3:5985/wsman
 
+![Captura de WINRM](/assets/images/Examenfinal/WINRM.png)
+
 ---
 
 ## 18. Resumen de servicios encontrados
 
-PuertoServicioVersión / Identificación22SSHOpenSSH 7.1139NetBIOSMicrosoft Windows445SMBMicrosoft Windows3306MySQL5.5.203389RDPMicrosoft Terminal Services4848HTTPSGlassFish 4.05985WinRMMicrosoft HTTPAPI8022HTTPApache Tomcat8080HTTPGlassFish 4.08181HTTPSGlassFish 4.08282HTTPTomcat 8.0.338484HTTPJenkins 1.6378585HTTPApache 2.2.21 + PHP 5.3.109200HTTPElasticsearch 1.1.119. Matriz de HallazgosN°HallazgoEvidenciaValoración1Windows Server 2008 R2 SP1Nmap/SMBAlta2SMB expuestoTCP/445Alta3SMB signing no obligatorioNmap NSEAlta4Acceso Guest/Anonymoussmbclient/NmapAlta5MySQL 5.5.20NmapAlta6GlassFish 4.0Nmap/curlAlta7Apache 2.2.21Nmap/curlAlta8PHP 5.3.10Nmap/curlAlta9Tomcat 8.0.33NmapMedia / Alta10Jenkins 1.637Nmap/curlAlta11Elasticsearch 1.1.1Nmap/curlAlta12RDP expuestoTCP/3389Media / Alta13WinRM expuestoTCP/5985Media
+| Puerto | Servicio | Versión/Identificación |
+| :--- | :---: | :---: |
+| 22 | SSH | OpenSSH 7.1 |
+| 139 | NetBIOS | Microsoft Windows |
+| 445 | SMB | Microsoft Windows |
+| 3306 | MySQL | 5.5.20 |
+| 3389 | RDP | Microsoft Terminal Services |
+| 4848 | HTTPS | GlassFish 4.0 |
+| 5985 | WinRM | Microsoft HTTPAPI |
+| 8022 | HTTP | Apache Tomcat |
+| 8080 | HTTP| GlassFish 4.0 |
+| 8181 | HTTPS| GlassFish 4.0 |
+| 8282 | HTTP | Tomcat 8.0.33 |
+| 8484 | HTTP | Jenkins 1.637 |
+| 8585 | HTTP | Apache 2.2.21 + PHP 5.3.10 |
+| 9200| HTTP | Elasticsearch 1.1.1 |
+
+## 19. Matriz de Hallazgos
+
+| N° | Hallazgo | Evidencia | Valoración | Valoración |
+| :--- | :---: | :---: | :---: |
+| 1 | Windows Server 2008 R2 SP1 | Nmap/SMB | Alta |
+| 2 | SMB expuesto | TCP/445 | Alta |
+| 3 | SMB signing no obligatorio | Nmap NSE | Alta |
+| 4 | Acceso Guest/Anonymous | smbclient/Nmap | Alta |
+| 5 | MySQL 5.5.20 | Nmap | Alta |
+| 6 | GlassFish 4.0 | Nmap/curl | Alta |
+| 7 | Apache 2.2.21 | Nmap/curl | Alta |
+| 8 | PHP 5.3.10 | Nmap/curl | Alta |
+| 9 | Tomcat 8.0.33| Nmap | Media/ Alta |
+| 10 | Jenkins 1.637| Nmap/curl | Alta |
+| 11 | Elasticsearch 1.1.1 | Nmap/curl | Alta |
+| 12 | RDP expuesto | TCP/3389 | Media /Alta |
+| 13 | WinRM expuesto | TCP/5985 | Media |
 
 ---
