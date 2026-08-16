@@ -119,49 +119,75 @@ Se verificó la configuración de red del equipo atacante Kali Linux, identific�
 
 ![Captura de Red kali](/assets/images/Examenfinal/redkali.png)
 
-2. Tabla de enrutamientoSe verificó que Kali Linux pertenece a la red 10.0.2.0/24 y utiliza 10.0.2.1 como puerta de enlace.
+---
+
+## 2. Tabla de enrutamiento
+
+Se verificó que Kali Linux pertenece a la red `10.0.2.0/24` y utiliza `10.0.2.1` como puerta de enlace.
 
 ![Captura de Enrutamiento](/assets/images/Examenfinal/enrutamiento.png)
 
-3. Descubrimiento de equiposMediante un escaneo de descubrimiento ICMP/ARP se identificaron cuatro hosts activos dentro de la red 10.0.2.0/24. El host 10.0.2.3 fue seleccionado para una enumeración más detallada debido a la cantidad de servicios expuestos.Bashsudo nmap -sn 10.0.2.0/24
+---
+
+## 3. Descubrimiento de equipos
+
+Mediante un escaneo de descubrimiento ICMP/ARP se identificaron cuatro hosts activos dentro de la red 10.0.2.0/24. El host 10.0.2.3 fue seleccionado para una enumeración más detallada debido a la cantidad de servicios expuestos.Bashsudo nmap -sn 10.0.2.0/24
 
 ![Captura de Descrubrimiento de Equipos](/assets/images/Examenfinal/deteccionequipos.png)
 
-4. Escaneo inicial de puertosSe realizó un escaneo SYN sobre los 1000 puertos TCP más utilizados, identificándose múltiples servicios expuestos, entre ellos SSH, SMB, MySQL, RDP, HTTP/HTTPS, Tomcat, GlassFish y Elasticsearch.
+## 4. Escaneo inicial de puertos
+
+Se realizó un escaneo SYN sobre los 1000 puertos TCP más utilizados, identificándose múltiples servicios expuestos, entre ellos SSH, SMB, MySQL, RDP, HTTP/HTTPS, Tomcat, GlassFish y Elasticsearch.
 
 ![Captura de Escaneo de Puertos](/assets/images/Examenfinal/escaneoinicial.png)
 
+---
 
-5. Escaneo completo de puertosSe efectuó un escaneo completo de los 65535 puertos TCP, identificándose una superficie de exposición considerable de más de 40 puertos TCP abiertos. Se detectaron servicios adicionales que no aparecieron en el escaneo inicial de los 1000 puertos.
+## 5. Escaneo completo de puertos
+
+Se efectuó un escaneo completo de los 65535 puertos TCP, identificándose una superficie de exposición considerable de más de 40 puertos TCP abiertos. Se detectaron servicios adicionales que no aparecieron en el escaneo inicial de los 1000 puertos.
 
 ![Captura de Inteligencia en OpenCTI](/assets/images/Examenfinal/escaneocompleto.png)
 
-6. Identificación de servicios y versionesSe ejecutó un escaneo exhaustivo guardando los resultados en escaneo.txt:Bashsudo nmap -sV -sC -p- 10.0.2.3 -oN escaneo.txt
-6.1. SSH, SMB, MySQL y RDP
+---
+
+## 6. Identificación de servicios y versiones
+
+Se ejecutó un escaneo exhaustivo guardando los resultados en escaneo.txt:Bashsudo nmap -sV -sC -p- 10.0.2.3 -oN escaneo.txt
+
+## 6.1. SSH, SMB, MySQL y RDP
 
 ![Captura de SSH, SMB, MySQL y RDP](/assets/images/Examenfinal/SSH.png)
 
+---
+
 Se identificaron servicios de administración remota, compartición de archivos y acceso a base de datos, destacando SSH, SMB, MySQL y RDP. Las versiones identificadas permiten realizar posteriormente una evaluación específica de seguridad.
 
-6.2. Servicios Java / GlassFish / Tomcat
+## 6.2. Servicios Java / GlassFish / Tomcat
 
 ![Captura de Servicio Java](/assets/images/Examenfinal/serviciojava.png)
 
+---
+
 Se identificaron diferentes servicios asociados a servidores de aplicaciones Java, incluyendo Oracle GlassFish 4.0 y Apache Tomcat 8.0.33. La presencia simultánea de varios servicios web amplía la superficie de ataque del servidor y requiere una evaluación individual de cada aplicación.
 
-6.3. Jenkins, WAMPServer y Elasticsearch
+## 6.3. Jenkins, WAMPServer y Elasticsearch
 
 ![Captura de Jenkins](/assets/images/Examenfinal/jenkins.png)
 
 Se identificaron tres componentes relevantes: Jenkins sobre el puerto 8484, WAMPServer mediante Apache/PHP sobre el puerto 8585 y una instancia de Elasticsearch 1.1.1 en el puerto 9200.
 
-7. Identificación del sistema operativo
+---
+
+## 7. Identificación del sistema operativo
 
 Mediante la enumeración SMB se identificó el sistema operativo como Windows Server 2008 R2 Standard Service Pack 1. También se obtuvo el nombre del equipo VAGRANT-2008R2, perteneciente al grupo de trabajo WORKGROUP.
 
 ![Captura de Sistema Operativo](/assets/images/Examenfinal/SO.png)
 
-8. Seguridad SMB
+---
+
+## 8. Seguridad SMB
 
 Ejecutamos: grep -E -A6 "smb2-security-mode|smb-security-mode" escaneo.txt
 
@@ -169,16 +195,21 @@ Ejecutamos: grep -E -A6 "smb2-security-mode|smb-security-mode" escaneo.txt
 
 La enumeración SMB evidenció que la firma SMB no está configurada como obligatoria. Asimismo, se identificó el uso de la cuenta Guest durante la enumeración. Estas condiciones representan configuraciones potencialmente inseguras que incrementan la superficie de exposición del servicio SMB.
 
-9. Enumeración SMB mediante acceso anónimo
+---
+
+## 9. Enumeración SMB mediante acceso anónimo
 
 Se realizó una consulta al servicio SMB sin proporcionar credenciales. El servidor respondió indicando Anonymous login successful; sin embargo, no fue posible completar el listado de recursos compartidos debido a la negociación con SMB1.
 
 ![Captura de Enumeracion](/assets/images/Examenfinal/enumeracion.png)
 
-10. Enumeración del servicio Jenkins
+---
+
+## 10. Enumeración del servicio Jenkins
 
 ![Captura de servicio Jenkins](/assets/images/Examenfinal/serviciojenkins.png)
 
+---
 
 Se verificó que el puerto 8484 corresponde a un servidor Jenkins accesible mediante HTTP. La respuesta HTTP permitió identificar Jenkins versión 1.637 y el servidor Jetty utilizado.Bashcurl -I 10.0.2.3:8484
 10.1. Captura visual de JenkinsAcceso mediante navegador web en 10.0.2.3:8484.11. Enumeración de Apache/WAMPServerLa consulta HTTP permitió identificar Apache 2.2.21 ejecutándose sobre Windows, junto con PHP 5.3.10. El servidor respondió correctamente con código HTTP 200.Bashcurl -I 10.0.2.3:8585
