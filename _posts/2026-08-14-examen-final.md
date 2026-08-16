@@ -155,7 +155,7 @@ Se efectuó un escaneo completo de los 65535 puertos TCP, identificándose una s
 
 Se ejecutó un escaneo exhaustivo guardando los resultados en escaneo.txt:Bashsudo nmap -sV -sC -p- 10.0.2.3 -oN escaneo.txt
 
-## 6.1. SSH, SMB, MySQL y RDP
+### 6.1. SSH, SMB, MySQL y RDP
 
 ![Captura de SSH, SMB, MySQL y RDP](/assets/images/Examenfinal/SSH.png)
 
@@ -163,7 +163,7 @@ Se ejecutó un escaneo exhaustivo guardando los resultados en escaneo.txt:Bashsu
 
 Se identificaron servicios de administración remota, compartición de archivos y acceso a base de datos, destacando SSH, SMB, MySQL y RDP. Las versiones identificadas permiten realizar posteriormente una evaluación específica de seguridad.
 
-## 6.2. Servicios Java / GlassFish / Tomcat
+### 6.2. Servicios Java / GlassFish / Tomcat
 
 ![Captura de Servicio Java](/assets/images/Examenfinal/serviciojava.png)
 
@@ -171,7 +171,7 @@ Se identificaron servicios de administración remota, compartición de archivos 
 
 Se identificaron diferentes servicios asociados a servidores de aplicaciones Java, incluyendo Oracle GlassFish 4.0 y Apache Tomcat 8.0.33. La presencia simultánea de varios servicios web amplía la superficie de ataque del servidor y requiere una evaluación individual de cada aplicación.
 
-## 6.3. Jenkins, WAMPServer y Elasticsearch
+### 6.3. Jenkins, WAMPServer y Elasticsearch
 
 ![Captura de Jenkins](/assets/images/Examenfinal/jenkins.png)
 
@@ -213,25 +213,25 @@ Se verificó que el puerto 8484 corresponde a un servidor Jenkins accesible medi
 
 ---
 
-## 10.1. Captura visual de Jenkins
+## 11. Captura visual de Jenkins
 
 Acceso mediante navegador web en 10.0.2.3:8484.11. Enumeración de Apache/WAMPServerLa consulta HTTP permitió identificar Apache 2.2.21 ejecutándose sobre Windows, junto con PHP 5.3.10. El servidor respondió correctamente con código HTTP 200.Bashcurl -I 10.0.2.3:8585
 
 ---
 
-## 11.1. Captura visual WAMPServer
+## 12. Captura visual WAMPServer
 
 Acceso mediante navegador web en 10.0.2.3:8585.12. Enumeración de GlassFishSe verificó mediante HTTP que el puerto 8080 corresponde a Oracle GlassFish Server Open Source Edition 4.0, confirmando la información obtenida previamente mediante Nmap.Bashcurl -I 10.0.2.3:8080
 
 ---
 
-## 12.1. Acceso mediante navegador GlassFish
+## 13. Acceso mediante navegador GlassFish
 
 Acceso visual al portal de administración en 10.0.2.3:8080.13. Enumeración de TomcatSe verificó la disponibilidad del servicio web asociado a Apache Tomcat en el puerto 8282. Nmap identificó la versión Apache Tomcat 8.0.33.Bashcurl -I 10.0.2.3:8282
 
 ---
 
-## 13.1. Acceso mediante navegador Tomcat
+## 14. Acceso mediante navegador Tomcat
 
 Acceso visual a la interfaz web en 10.0.2.3:8282.14. Enumeración de ElasticsearchSe verificó que el servicio Elasticsearch se encuentra accesible mediante HTTP en el puerto 9200. La respuesta permitió identificar la instancia Overrider y la versión Elasticsearch 1.1.1.Bashcurl 10.0.2.3:9200
 
