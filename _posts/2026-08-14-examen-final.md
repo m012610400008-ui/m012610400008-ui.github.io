@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "EXAMEN FINAL - Capstone Threat-Informed"
 date: 2026-08-14 18:00:00 -0500
 categories: [Ciberseguridad]
@@ -23,7 +24,7 @@ MITRE identifica a Dragonfly como **G0035** y registra como alias, entre otros, 
 ### Motivación y Sectores Objetivo
 La actividad atribuida a Dragonfly se caracteriza principalmente por objetivos de espionaje y obtención de acceso a organizaciones de interés estratégico, incluyendo la industria de defensa, aviación, gobierno, sistemas de control industrial (ICS/SCADA) e infraestructura crítica (especialmente el sector energético).
 
-![Perfil de Dragonfly en MITRE ATT&CK]({{site.baseurl}}/assets/images/Examenfinal/mitre_dragonfly.png)
+![Perfil de Dragonfly en MITRE ATT&CK](/assets/images/Examenfinal/mitre_dragonfly.png)
 
 ---
 
@@ -31,7 +32,7 @@ La actividad atribuida a Dragonfly se caracteriza principalmente por objetivos d
 
 Los adversarios intentan aprovechar vulnerabilidades o debilidades en software expuesto directamente a Internet o a la red externa (servidores web, bases de datos, APIs o servicios de administración) para lograr el acceso inicial.
 
-![Ficha MITRE ATT&CK T1190]({{site.baseurl}}/assets/images/Examenfinal/mitre_t1190.png)
+![Ficha MITRE ATT&CK T1190](/assets/images/Examenfinal/mitre_t1190.png)
 
 ---
 
@@ -45,7 +46,7 @@ A partir de la inteligencia extraída del servidor OpenCTI del curso:
 | **Karagany** | Troyano de acceso remoto (RAT) utilizado para la recolección de credenciales y reconocimiento. | OpenCTI / MITRE |
 | **Psyshot / Lightsout** | Scripts y herramientas personalizadas para persistencia y ejecución de comandos. | OpenCTI |
 
-![Captura de Inteligencia en OpenCTI]({{site.baseurl}}/assets/images/Examenfinal/opencti.png)
+![Captura de Inteligencia en OpenCTI](/assets/images/Examenfinal/opencti.png)
 
 ---
 
