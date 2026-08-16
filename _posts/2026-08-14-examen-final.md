@@ -311,6 +311,8 @@ Se verificó la respuesta del servicio WinRM expuesto en el puerto 5985. Este se
 | 8585 | HTTP | Apache 2.2.21 + PHP 5.3.10 |
 | 9200| HTTP | Elasticsearch 1.1.1 |
 
+---
+
 ## 19. Matriz de Hallazgos
 
 | N° | Hallazgo | Evidencia | Valoración | Valoración |
