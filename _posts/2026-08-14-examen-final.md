@@ -90,7 +90,7 @@ Al examinar los indicadores en OpenCTI:
 | Indicador | Tipo | TLP | Nivel |
 | :--- | :---: | :---: | :---: |
 | Direcciones IP de C2 | IP | TLP:AMBER / TLP:CLEAR | Táctico |
-| Dominios comprometidos | Dominio | TLP:AMBER / TLP:CLEAR | Táctico |
+| Dominios compromised | Dominio | TLP:AMBER / TLP:CLEAR | Táctico |
 | Hashes de muestras | Hash | TLP:CLEAR | Táctico |
 
 > **Manejo de TLP:NONE:**  
@@ -125,14 +125,14 @@ A través de ip route se verificó que Kali Linux pertenece a la red 10.0.2.0/24
 4. Identificación de Servicios y VersionesSe ejecutó un escaneo exhaustivo con scripts por defecto NSE y detección de versiones guardando los resultados en escaneo.txt:Bashsudo nmap -sV -sC -p- 10.0.2.3 -oN escaneo.txt
 4.1. Servicios Base (SSH, SMB, MySQL, RDP)Se identificaron servicios de administración remota, compartición de archivos y bases de datos.4.2. Identificación del Sistema OperativoMediante la enumeración SMB se identificó la máquina víctima como Windows Server 2008 R2 Standard Service Pack 1 (Nombre de equipo: VAGRANT-2008R2, Workgroup: WORKGROUP).4.3. Evaluación de Seguridad en SMBSe filtró la información sobre firmas e inicios de sesión en SMB:Bashgrep -E -A6 "smb2-security-mode|smb-security-mode" escaneo.txt
 La firma SMB no está configurada como obligatoria. Además, la consulta mediante smbclient confirmó acceso exitoso sin credenciales (Anonymous login successful).Bashsmbclient -L //10.0.2.3 -N
-5. Enumeración de Servicios Web DetectadosJenkins (Puerto 8484): Servidor Jetty ejecutando Jenkins v1.637.Bashcurl -I [http://10.0.2.3:8484](http://10.0.2.3:8484)
-WAMPServer / Apache + PHP (Puerto 8585 - Objetivo Asignado): Apache 2.2.21 sobre Windows con PHP 5.3.10.Bashcurl -I [http://10.0.2.3:8585](http://10.0.2.3:8585)
-Oracle GlassFish Server (Puerto 8080 / 4848): Oracle GlassFish Server Open Source Edition 4.0.Bashcurl -I [http://10.0.2.3:8080](http://10.0.2.3:8080)
-Apache Tomcat (Puerto 8282): Apache Tomcat v8.0.33.Bashcurl -I [http://10.0.2.3:8282](http://10.0.2.3:8282)
-Elasticsearch (Puerto 9200): Instancia Overrider ejecutando Elasticsearch v1.1.1.Bashcurl [http://10.0.2.3:9200](http://10.0.2.3:9200)
+5. Enumeración de Servicios Web DetectadosJenkins (Puerto 8484): Servidor Jetty ejecutando Jenkins v1.637 en http://10.0.2.3:8484.Bashcurl -I [http://10.0.2.3:8484](http://10.0.2.3:8484)
+WAMPServer / Apache + PHP (Puerto 8585 - Objetivo Asignado): Apache 2.2.21 sobre Windows con PHP 5.3.10 en http://10.0.2.3:8585.Bashcurl -I [http://10.0.2.3:8585](http://10.0.2.3:8585)
+Oracle GlassFish Server (Puerto 8080 / 4848): Oracle GlassFish Server Open Source Edition 4.0 en http://10.0.2.3:8080.Bashcurl -I [http://10.0.2.3:8080](http://10.0.2.3:8080)
+Apache Tomcat (Puerto 8282): Apache Tomcat v8.0.33 en http://10.0.2.3:8282.Bashcurl -I [http://10.0.2.3:8282](http://10.0.2.3:8282)
+Elasticsearch (Puerto 9200): Instancia Overrider ejecutando Elasticsearch v1.1.1 en http://10.0.2.3:9200.Bashcurl [http://10.0.2.3:9200](http://10.0.2.3:9200)
 curl [http://10.0.2.3:9200/_cluster/health](http://10.0.2.3:9200/_cluster/health)
 curl [http://10.0.2.3:9200/_cat/indices?v](http://10.0.2.3:9200/_cat/indices?v)
-WinRM (Puerto 5985): Servicio de administración remota de Windows (Microsoft-HTTPAPI/2.0).Bashcurl -I [http://10.0.2.3:5985/wsman](http://10.0.2.3:5985/wsman)
+WinRM (Puerto 5985): Servicio de administración remota de Windows (http://10.0.2.3:5985/wsman).Bashcurl -I [http://10.0.2.3:5985/wsman](http://10.0.2.3:5985/wsman)
 6. Resumen de Servicios y Matriz de Hallazgos6.1. Resumen de Servicios EncontradosPuertoServicioVersión / Identificación22SSHOpenSSH 7.1139 / 445NetBIOS / SMBMicrosoft Windows Server 2008 R23306MySQLMySQL 5.5.203389RDPMicrosoft Terminal Services4848 / 8080HTTPS / HTTPOracle GlassFish 4.05985WinRMMicrosoft HTTPAPI 2.08022 / 8282HTTPApache Tomcat 8.0.338484HTTPJenkins 1.6378585HTTPApache 2.2.21 + PHP 5.3.10 (WAMPServer)9200HTTPElasticsearch 1.1.16.2. Matriz de Hallazgos del SistemaN°HallazgoEvidenciaValoración1Windows Server 2008 R2 SP1Nmap / SMBAlta2SMB expuesto sin firma obligatoriaNmap NSEAlta3Acceso SMB Anónimo / GuestsmbclientAlta4MySQL 5.5.20 expuestoNmapAlta5GlassFish 4.0 desactualizadoNmap / curlAlta6Apache 2.2.21 + PHP 5.3.10 (Vulnerable)Nmap / curlCrítica7Tomcat 8.0.33 expuestoNmap / curlMedia / Alta8Jenkins 1.637 sin autenticaciónNmap / curlAlta9Elasticsearch 1.1.1 expuestoNmap / curlAlta10RDP y WinRM habilitadosTCP 3389 / 5985MediaACTO 3 — Ejecución de la Kill Chain1. Preparación e Inspección del Módulo en MetasploitSe inició msfconsole y se buscó el módulo correspondiente a la inyección de argumentos en PHP CGI:Bashmsfconsole
 search php_cgi_arg_injection
 use exploit/multi/http/php_cgi_arg_injection
