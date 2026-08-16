@@ -209,14 +209,54 @@ Se realizó una consulta al servicio SMB sin proporcionar credenciales. El servi
 
 ![Captura de servicio Jenkins](/assets/images/Examenfinal/serviciojenkins.png)
 
+Se verificó que el puerto 8484 corresponde a un servidor Jenkins accesible mediante HTTP. La respuesta HTTP permitió identificar Jenkins versión 1.637 y el servidor Jetty utilizado.Bashcurl -I 10.0.2.3:8484
+
 ---
 
-Se verificó que el puerto 8484 corresponde a un servidor Jenkins accesible mediante HTTP. La respuesta HTTP permitió identificar Jenkins versión 1.637 y el servidor Jetty utilizado.Bashcurl -I 10.0.2.3:8484
-10.1. Captura visual de JenkinsAcceso mediante navegador web en 10.0.2.3:8484.11. Enumeración de Apache/WAMPServerLa consulta HTTP permitió identificar Apache 2.2.21 ejecutándose sobre Windows, junto con PHP 5.3.10. El servidor respondió correctamente con código HTTP 200.Bashcurl -I 10.0.2.3:8585
-11.1. Captura visual WAMPServerAcceso mediante navegador web en 10.0.2.3:8585.12. Enumeración de GlassFishSe verificó mediante HTTP que el puerto 8080 corresponde a Oracle GlassFish Server Open Source Edition 4.0, confirmando la información obtenida previamente mediante Nmap.Bashcurl -I 10.0.2.3:8080
-12.1. Acceso mediante navegador GlassFishAcceso visual al portal de administración en 10.0.2.3:8080.13. Enumeración de TomcatSe verificó la disponibilidad del servicio web asociado a Apache Tomcat en el puerto 8282. Nmap identificó la versión Apache Tomcat 8.0.33.Bashcurl -I 10.0.2.3:8282
-13.1. Acceso mediante navegador TomcatAcceso visual a la interfaz web en 10.0.2.3:8282.14. Enumeración de ElasticsearchSe verificó que el servicio Elasticsearch se encuentra accesible mediante HTTP en el puerto 9200. La respuesta permitió identificar la instancia Overrider y la versión Elasticsearch 1.1.1.Bashcurl 10.0.2.3:9200
-15. Estado del clúster ElasticsearchLa consulta del estado del clúster confirmó que Elasticsearch se encuentra operativo con un único nodo.Bashcurl 10.0.2.3:9200/_cluster/health
-16. Enumeración de índices ElasticsearchSe consultó el catálogo de índices de Elasticsearch mediante la API _cat/indices. La respuesta permitió identificar los índices disponibles en la instancia y verificar la información que el servicio expone mediante su interfaz REST.Bashcurl 10.0.2.3:9200/_cat/indices?v
-17. Verificación adicional de WinRMSe verificó la respuesta del servicio WinRM expuesto en el puerto 5985. Este servicio corresponde a mecanismos de administración remota de Windows y representa una superficie adicional que debe ser protegida y restringida.Bashcurl -I 10.0.2.3:5985/wsman
-18. Resumen de servicios encontradosPuertoServicioVersión / Identificación22SSHOpenSSH 7.1139NetBIOSMicrosoft Windows445SMBMicrosoft Windows3306MySQL5.5.203389RDPMicrosoft Terminal Services4848HTTPSGlassFish 4.05985WinRMMicrosoft HTTPAPI8022HTTPApache Tomcat8080HTTPGlassFish 4.08181HTTPSGlassFish 4.08282HTTPTomcat 8.0.338484HTTPJenkins 1.6378585HTTPApache 2.2.21 + PHP 5.3.109200HTTPElasticsearch 1.1.119. Matriz de HallazgosN°HallazgoEvidenciaValoración1Windows Server 2008 R2 SP1Nmap/SMBAlta2SMB expuestoTCP/445Alta3SMB signing no obligatorioNmap NSEAlta4Acceso Guest/Anonymoussmbclient/NmapAlta5MySQL 5.5.20NmapAlta6GlassFish 4.0Nmap/curlAlta7Apache 2.2.21Nmap/curlAlta8PHP 5.3.10Nmap/curlAlta9Tomcat 8.0.33NmapMedia / Alta10Jenkins 1.637Nmap/curlAlta11Elasticsearch 1.1.1Nmap/curlAlta12RDP expuestoTCP/3389Media / Alta13WinRM expuestoTCP/5985Media
+## 10.1. Captura visual de Jenkins
+
+Acceso mediante navegador web en 10.0.2.3:8484.11. Enumeración de Apache/WAMPServerLa consulta HTTP permitió identificar Apache 2.2.21 ejecutándose sobre Windows, junto con PHP 5.3.10. El servidor respondió correctamente con código HTTP 200.Bashcurl -I 10.0.2.3:8585
+
+---
+
+## 11.1. Captura visual WAMPServer
+
+Acceso mediante navegador web en 10.0.2.3:8585.12. Enumeración de GlassFishSe verificó mediante HTTP que el puerto 8080 corresponde a Oracle GlassFish Server Open Source Edition 4.0, confirmando la información obtenida previamente mediante Nmap.Bashcurl -I 10.0.2.3:8080
+
+---
+
+## 12.1. Acceso mediante navegador GlassFish
+
+Acceso visual al portal de administración en 10.0.2.3:8080.13. Enumeración de TomcatSe verificó la disponibilidad del servicio web asociado a Apache Tomcat en el puerto 8282. Nmap identificó la versión Apache Tomcat 8.0.33.Bashcurl -I 10.0.2.3:8282
+
+---
+
+## 13.1. Acceso mediante navegador Tomcat
+
+Acceso visual a la interfaz web en 10.0.2.3:8282.14. Enumeración de ElasticsearchSe verificó que el servicio Elasticsearch se encuentra accesible mediante HTTP en el puerto 9200. La respuesta permitió identificar la instancia Overrider y la versión Elasticsearch 1.1.1.Bashcurl 10.0.2.3:9200
+
+---
+
+## 15. Estado del clúster Elasticsearch
+
+La consulta del estado del clúster confirmó que Elasticsearch se encuentra operativo con un único nodo.Bashcurl 10.0.2.3:9200/_cluster/health
+
+---
+
+## 16. Enumeración de índices Elasticsearch
+
+Se consultó el catálogo de índices de Elasticsearch mediante la API _cat/indices. La respuesta permitió identificar los índices disponibles en la instancia y verificar la información que el servicio expone mediante su interfaz REST.Bashcurl 10.0.2.3:9200/_cat/indices?v
+
+---
+
+## 17. Verificación adicional de WinRM
+
+Se verificó la respuesta del servicio WinRM expuesto en el puerto 5985. Este servicio corresponde a mecanismos de administración remota de Windows y representa una superficie adicional que debe ser protegida y restringida.Bashcurl -I 10.0.2.3:5985/wsman
+
+---
+
+## 18. Resumen de servicios encontrados
+
+PuertoServicioVersión / Identificación22SSHOpenSSH 7.1139NetBIOSMicrosoft Windows445SMBMicrosoft Windows3306MySQL5.5.203389RDPMicrosoft Terminal Services4848HTTPSGlassFish 4.05985WinRMMicrosoft HTTPAPI8022HTTPApache Tomcat8080HTTPGlassFish 4.08181HTTPSGlassFish 4.08282HTTPTomcat 8.0.338484HTTPJenkins 1.6378585HTTPApache 2.2.21 + PHP 5.3.109200HTTPElasticsearch 1.1.119. Matriz de HallazgosN°HallazgoEvidenciaValoración1Windows Server 2008 R2 SP1Nmap/SMBAlta2SMB expuestoTCP/445Alta3SMB signing no obligatorioNmap NSEAlta4Acceso Guest/Anonymoussmbclient/NmapAlta5MySQL 5.5.20NmapAlta6GlassFish 4.0Nmap/curlAlta7Apache 2.2.21Nmap/curlAlta8PHP 5.3.10Nmap/curlAlta9Tomcat 8.0.33NmapMedia / Alta10Jenkins 1.637Nmap/curlAlta11Elasticsearch 1.1.1Nmap/curlAlta12RDP expuestoTCP/3389Media / Alta13WinRM expuestoTCP/5985Media
+
+---
